@@ -6,6 +6,7 @@ import { placeById, taxiCard } from '../places.js';
 import { forgetKeys, getKeys } from '../secrets.js';
 import { infoSheet } from './plan.js';
 import { prepSheet, prepCount } from './prep.js';
+import { installApp, isInstalled } from '../install.js';
 
 const rate = () => store.state.trip?.rate || 0; // won per 100 yen
 
@@ -160,6 +161,7 @@ export function renderMore(root) {
     trip ? ['✈', '항공 · 호텔 정보', '편명, 시간, 체크인', () => infoSheet(trip)] : null,
     ['♨', '온천 이용법', '들어가는 순서와 예절', onsenSheet],
     ['🧳', '짐 체크리스트', '출발 전 준비물', packingSheet],
+    isInstalled() ? null : ['📲', '홈 화면에 바로가기 만들기', '아이콘으로 앱처럼 열기', installApp],
     ['⚙', '설정', '글씨 크기, 가족 공유 상태', () => settingsSheet(() => renderMore(root))],
   ].filter(Boolean);
   mount(root, 

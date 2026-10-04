@@ -141,6 +141,9 @@ textarea.input { resize: vertical; }
 .prep-next { background: var(--card); border: 2px solid var(--indigo); border-radius: var(--radius); padding: 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
 .prep-next h3 { font-family: var(--display); font-weight: 400; font-size: 1.55rem; line-height: 1.25; }
 
+.install-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.7rem 0.6rem 0.7rem 0.8rem; display: grid; grid-template-columns: auto 1fr auto; gap: 0.7rem; align-items: center; }
+.install-card img { border-radius: 12px; display: block; }
+
 /* ---------- day tabs + timeline ---------- */
 .days { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.5rem; }
 .day { border: 1.5px solid var(--line); background: var(--card); border-radius: 12px; padding: 0.5rem; display: flex; flex-direction: column; align-items: center; min-height: 3.4rem; }

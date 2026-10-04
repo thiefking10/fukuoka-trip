@@ -6,6 +6,7 @@ import { renderRecommend } from './views/recommend.js';
 import { renderCamera } from './views/camera.js';
 import { renderMissions } from './views/missions.js';
 import { renderMore } from './views/more.js';
+import { onInstallChange } from './install.js';
 
 const TABS = [
   { id: 'plan', label: '일정', icon: '🗓', render: renderPlan },
@@ -53,6 +54,7 @@ function shell() {
     draw();
   });
   draw();
+  onInstallChange(() => !document.querySelector('.sheet-wrap') && draw());
   setInterval(() => tab === 'plan' && !document.querySelector('.sheet-wrap') && draw(), 60000);
 }
 
