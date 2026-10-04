@@ -5,6 +5,7 @@ import { PHRASES, ONSEN_GUIDE, PACKING } from '../data/static.js';
 import { placeById, taxiCard } from '../places.js';
 import { forgetKeys, getKeys } from '../secrets.js';
 import { infoSheet } from './plan.js';
+import { prepSheet, prepCount } from './prep.js';
 
 const rate = () => store.state.trip?.rate || 0; // won per 100 yen
 
@@ -149,7 +150,9 @@ function settingsSheet(rerender) {
 export function renderMore(root) {
   const trip = store.state.trip;
   const hotel = placeById('hotel');
+  const pc = prepCount();
   const rows = [
+    ['✅', '출발 전 체크', `${pc.done} / ${pc.total} 개 확인`, () => prepSheet(() => renderMore(root))],
     hotel ? ['🚕', '호텔로 가는 택시 카드', '기사님께 보여주는 일본어 주소', () => taxiCard(hotel)] : null,
     ['🙋', '택시 부르는 법', '카카오 T, 호텔에 부탁하기', taxiHelpSheet],
     ['🗣', '보여주는 일본어', '식당, 택시, 온천, 급할 때', phrasesSheet],

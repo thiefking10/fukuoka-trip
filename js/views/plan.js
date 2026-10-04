@@ -3,6 +3,7 @@ import { store, put, remove, list, update } from '../store.js';
 import { h, mount, sheet, confirmSheet, toast, todayStr, nowHM, dayLabel, daysUntil, mapsDirUrl, uid } from '../util.js';
 import { placeById, taxiCard, pickPlace, allPlaces } from '../places.js';
 import { askReplan, hasAI } from '../gemini.js';
+import { prepCard } from './prep.js';
 
 let activeDay = null;
 
@@ -227,6 +228,7 @@ export function renderPlan(root) {
 
   mount(root, 
     ticket(trip),
+    prepCard(trip, () => renderPlan(root)),
     h('nav', { class: 'days', 'aria-label': '날짜' }, days.map((d, i) => {
       const l = dayLabel(d);
       return h('button', { class: `day ${d === activeDay ? 'on' : ''}`, onclick: () => { activeDay = d; renderPlan(root); } },

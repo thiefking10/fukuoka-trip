@@ -135,6 +135,12 @@ textarea.input { resize: vertical; }
 .stub-btn { border: 0; background: rgba(255,255,255,0.14); color: #fff; border-radius: 12px; padding: 0.55rem 0.7rem; font-weight: 700; font-size: 0.85rem; display: flex; flex-direction: column; align-items: center; gap: 0.1rem; min-width: 4.6rem; }
 .stub-ico { font-size: 1.25rem; }
 
+/* ---------- pre-departure check ---------- */
+.prep-card { width: 100%; border: 2px solid var(--sun); background: var(--sun-soft); border-radius: var(--radius); padding: 0.75rem 0.9rem; display: grid; grid-template-columns: auto 1fr auto; gap: 0.8rem; align-items: center; text-align: left; }
+.prep-ring { font-family: var(--display); font-size: 1.05rem; width: 3.3rem; height: 3.3rem; border-radius: 50%; border: 3px solid var(--indigo); background: var(--card); display: grid; place-items: center; color: var(--indigo); }
+.prep-next { background: var(--card); border: 2px solid var(--indigo); border-radius: var(--radius); padding: 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.prep-next h3 { font-family: var(--display); font-weight: 400; font-size: 1.55rem; line-height: 1.25; }
+
 /* ---------- day tabs + timeline ---------- */
 .days { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.5rem; }
 .day { border: 1.5px solid var(--line); background: var(--card); border-radius: 12px; padding: 0.5rem; display: flex; flex-direction: column; align-items: center; min-height: 3.4rem; }

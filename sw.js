@@ -1,11 +1,11 @@
 // Network first so a new version shows up as soon as it is published,
 // with the last good copy as the fallback when there is no signal.
-const CACHE = 'ft-shell-v1';
+const CACHE = 'ft-shell-v2';
 const SHELL = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest', 'icons/icon-192.png',
   'js/app.js', 'js/util.js', 'js/store.js', 'js/secrets.js', 'js/gemini.js', 'js/places.js',
   'js/data/places.js', 'js/data/static.js',
-  'js/views/plan.js', 'js/views/recommend.js', 'js/views/camera.js', 'js/views/missions.js', 'js/views/more.js',
+  'js/views/plan.js', 'js/views/recommend.js', 'js/views/camera.js', 'js/views/missions.js', 'js/views/more.js', 'js/views/prep.js', 'js/data/prep.js',
 ];
 
 self.addEventListener('install', (e) => {
