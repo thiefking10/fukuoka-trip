@@ -3,6 +3,7 @@
 // Nothing typed here is shown on screen or saved anywhere except the locked file.
 import { webcrypto as crypto } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -10,7 +11,17 @@ const ITER = 600000;
 const REPO = 'thiefking10/fukuoka-trip-data';
 const OUT = process.env.FT_SETUP_OUT || join(dirname(fileURLToPath(import.meta.url)), '..', 'secrets.enc.json');
 
-function askHidden(label) {
+// Some terminals do not paste into a hidden prompt, so the keys can also be taken
+// straight from the clipboard: copy the value, then just press Enter.
+function clipboard() {
+  try {
+    return execFileSync('powershell', ['-NoProfile', '-Command', 'Get-Clipboard -Raw'], { encoding: 'utf8' }).trim();
+  } catch {
+    return '';
+  }
+}
+
+function askHidden(label, { fromClipboard = false } = {}) {
   return new Promise((resolve) => {
     const { stdin, stdout } = process;
     stdout.write(label);
@@ -25,10 +36,11 @@ function askHidden(label) {
           stdin.pause();
           stdin.off('data', onData);
           stdout.write('\n');
-          return resolve(value.trim());
+          return resolve(value.trim() || (fromClipboard ? clipboard() : ''));
         }
         if (ch === '\u0003') { stdout.write('\n취소했습니다.\n'); process.exit(1); }
         if (ch === '\u007f' || ch === '\b') { value = [...value].slice(0, -1).join(''); continue; }
+        if (ch === '\u0016') { value += clipboard(); continue; } // Ctrl+V
         if (ch >= ' ') value += ch;
       }
     };
@@ -73,17 +85,26 @@ async function main() {
     process.exit(1);
   }
   console.log('\n후쿠오카 가족여행 앱 - 키 잠그기');
-  console.log('입력하는 글자는 화면에 보이지 않습니다. 붙여 넣고 엔터를 누르세요.\n');
+  console.log('입력하는 글자는 화면에 보이지 않습니다.');
+  console.log('1번과 2번은 메모장에서 값을 복사(Ctrl+C)한 다음, 여기서 엔터만 누르면 됩니다.\n');
 
-  const gh = await askHidden('1) 깃허브 토큰 (github_pat_...): ');
+  const gh = await askHidden('1) 깃허브 토큰을 복사한 뒤 엔터: ', { fromClipboard: true });
+  if (!gh.startsWith('github_pat_')) {
+    console.error('   복사된 내용이 깃허브 토큰이 아닙니다. github_pat_ 로 시작하는 값을 복사한 뒤 다시 실행하세요.');
+    process.exit(1);
+  }
   try { console.log(`   ${await checkGithub(gh)}`); } catch (e) { console.error(`   ${e.message}`); process.exit(1); }
 
-  const gm = await askHidden('2) 제미나이 API 키: ');
+  const gm = await askHidden('2) 제미나이 API 키를 복사한 뒤 엔터: ', { fromClipboard: true });
+  if (!gm || gm === gh) {
+    console.error('   제미나이 키가 복사되지 않았습니다. 키를 복사한 뒤 다시 실행하세요.');
+    process.exit(1);
+  }
   try { console.log(`   ${await checkGemini(gm)}`); } catch (e) { console.error(`   ${e.message}`); process.exit(1); }
 
   let pass;
   for (;;) {
-    pass = await askHidden('3) 가족 암호 (12글자 이상 권장): ');
+    pass = await askHidden('3) 가족 암호를 직접 입력 (12글자 이상 권장): ');
     if (pass.length < 8) { console.log('   너무 짧습니다. 8글자 이상으로 정해 주세요.'); continue; }
     const again = await askHidden('   가족 암호 한 번 더: ');
     if (again === pass) break;
