@@ -8,7 +8,7 @@ const FILE = 'state.json';
 const API = `https://api.github.com/repos/${REPO}/contents`;
 const POLL_MS = 45000;
 
-const EMPTY = { v: 1, trip: null, items: {}, missions: {}, expenses: {}, prep: {}, pack: {}, recommended: null };
+const EMPTY = { v: 1, trip: null, items: {}, missions: {}, expenses: {}, prep: {}, recommended: null };
 
 export const store = {
   state: ls.get('ft.state') || structuredClone(EMPTY),
@@ -64,7 +64,6 @@ function merge(remote, local) {
     missions: mergeMaps(remote.missions, local.missions),
     expenses: mergeMaps(remote.expenses, local.expenses),
     prep: mergeMaps(remote.prep, local.prep),
-    pack: mergeMaps(remote.pack, local.pack),
   };
 }
 
