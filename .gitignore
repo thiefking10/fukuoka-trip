@@ -2,3 +2,4 @@ local/
 .claude/
 node_modules/
 *.log
+*.pdf
