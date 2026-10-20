@@ -1,7 +1,8 @@
 // 더보기: taxi card, phrase cards, yen calculator and spending, packing, onsen guide, settings.
 import { store, put, remove, list, update, sync } from '../store.js';
 import { h, mount, ls, sheet, toast, yen, won, todayStr, dayLabel, confirmSheet } from '../util.js';
-import { PHRASES, ONSEN_GUIDE, PACKING } from '../data/static.js';
+import { PHRASES, ONSEN_GUIDE } from '../data/static.js';
+import { packingSheet } from './packing.js';
 import { placeById, taxiCard } from '../places.js';
 import { forgetKeys, getKeys } from '../secrets.js';
 import { infoSheet } from './plan.js';
@@ -73,36 +74,6 @@ function moneySheet() {
   sheet('엔화 계산기 · 쓴 돈', body, { full: true });
 }
 
-function packingSheet() {
-  const checked = new Set(ls.get('ft.pack', []));
-  const extra = ls.get('ft.packExtra', []);
-  const body = h('div', { class: 'stack' });
-  const draw = () => {
-    const groups = [...PACKING, ...(extra.length ? [{ group: '내가 추가한 것', items: extra }] : [])];
-    const totalN = groups.reduce((n, g) => n + g.items.length, 0);
-    const add = h('input', { class: 'input', type: 'text', placeholder: '추가할 물건' });
-    body.replaceChildren(
-      h('p', { class: 'muted' }, `${checked.size} / ${totalN} 개 챙김 · 위탁수하물은 1인 15kg까지입니다. 이 목록은 내 폰에만 저장됩니다.`),
-      ...groups.map((g) => h('section', null, h('h3', { class: 'sub' }, g.group),
-        g.items.map((it) => h('label', { class: 'check' },
-          h('input', { type: 'checkbox', checked: checked.has(it), onchange: (e) => {
-            e.target.checked ? checked.add(it) : checked.delete(it);
-            ls.set('ft.pack', [...checked]);
-            draw();
-          } }), h('span', null, it))))),
-      h('form', { class: 'row gap', onsubmit: (e) => {
-        e.preventDefault();
-        if (!add.value.trim()) return;
-        extra.push(add.value.trim());
-        ls.set('ft.packExtra', extra);
-        draw();
-      } }, add, h('button', { class: 'btn', type: 'submit' }, '추가')),
-    );
-  };
-  draw();
-  sheet('짐 체크리스트', body, { full: true });
-}
-
 function taxiHelpSheet() {
   sheet('택시 부르는 법', h('div', { class: 'stack' },
     h('ol', { class: 'guide' },
@@ -160,7 +131,7 @@ export function renderMore(root) {
     ['💴', '엔화 계산기 · 쓴 돈', rate() ? `100엔 = ${won(rate())}` : '환율을 넣으면 원화로 바로 보여요', moneySheet],
     trip ? ['✈', '항공 · 호텔 정보', '편명, 시간, 체크인', () => infoSheet(trip)] : null,
     ['♨', '온천 이용법', '들어가는 순서와 예절', onsenSheet],
-    ['🧳', '짐 체크리스트', '출발 전 준비물', packingSheet],
+    ['🧳', '짐 체크리스트', '공동 짐과 한 사람씩 챙길 것', () => packingSheet(() => renderMore(root))],
     isInstalled() ? null : ['📲', '홈 화면에 바로가기 만들기', '아이콘으로 앱처럼 열기', installApp],
     ['⚙', '설정', '글씨 크기, 가족 공유 상태', () => settingsSheet(() => renderMore(root))],
   ].filter(Boolean);
