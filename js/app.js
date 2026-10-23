@@ -1,6 +1,6 @@
 import { h, ls, toast } from './util.js';
 import { store, onChange, startSync, seedLocalIfEmpty } from './store.js';
-import { getKeys, forgetKeys, fetchLockedFile, unlock, lockedId, openedLockedId } from './secrets.js';
+import { getKeys, fetchLockedFile, unlock } from './secrets.js';
 import { renderPlan } from './views/plan.js';
 import { renderRecommend } from './views/recommend.js';
 import { renderCamera } from './views/camera.js';
@@ -89,15 +89,6 @@ function lockScreen(locked, note) {
 
 async function boot() {
   if ('serviceWorker' in navigator && !isLocalPreview) navigator.serviceWorker.register('sw.js').catch(() => {});
-  // Phones unlocked before the switch to Claude hold the old keys. Once a new locked file is
-  // published, ask for the passcode again; until then keep working so sharing never stops.
-  if (getKeys() && !getKeys().ak && !isLocalPreview) {
-    const locked = await fetchLockedFile();
-    if (locked && lockedId(locked) !== openedLockedId()) {
-      forgetKeys();
-      return lockScreen(locked, 'AI 기능이 Claude로 바뀌었습니다. 가족 암호를 한 번 더 입력해 주세요.');
-    }
-  }
   if (getKeys()) {
     shell();
     startSync();

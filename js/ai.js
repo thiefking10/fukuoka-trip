@@ -1,20 +1,33 @@
 // Calls to Claude straight from the phone. Every answer comes back as JSON that matches a
 // schema, so the views can lay it out instead of dumping a wall of text.
 import { getKeys } from './secrets.js';
+import { readPrivateText } from './store.js';
+import { ls } from './util.js';
 
 const SDK_URL = 'https://esm.sh/@anthropic-ai/sdk@1.1.0';
 const MODEL = 'claude-opus-5-5';
+// The Claude key sits in the private data repo, readable with the GitHub token each phone already has.
+const KEY_FILE = 'claude-key.txt';
 
 let Anthropic = null;
 let client = null;
 let clientKey = null;
 
-export const hasAI = () => !!getKeys()?.ak;
+export const hasAI = () => !!(getKeys()?.ak || getKeys()?.gh);
 
-async function getClient() {
-  const key = getKeys()?.ak;
-  if (!key) throw new Error('이 기능은 가족 암호로 잠금을 푼 뒤에 쓸 수 있습니다');
+async function claudeKey(refresh = false) {
+  const keys = getKeys();
+  if (!keys) throw new Error('이 기능은 가족 암호로 잠금을 푼 뒤에 쓸 수 있습니다');
+  if (keys.ak && !refresh) return keys.ak;
+  const key = await readPrivateText(KEY_FILE);
+  if (!key) throw new Error('Claude 키가 아직 등록되지 않았습니다. 비공개 저장소에 claude-key.txt를 올려 주세요');
+  ls.set('ft.keys', { ...keys, ak: key });
+  return key;
+}
+
+async function getClient(refresh = false) {
   if (!navigator.onLine) throw new Error('인터넷에 연결되어 있지 않습니다');
+  const key = await claudeKey(refresh);
   // Loaded on first use so the rest of the app still opens without a connection.
   if (!Anthropic) Anthropic = (await import(SDK_URL)).default;
   if (!client || clientKey !== key) {
@@ -26,6 +39,7 @@ async function getClient() {
 }
 
 function friendlyError(e) {
+  if (!Anthropic) return e;
   if (e instanceof Anthropic.AuthenticationError) return new Error('Claude 키가 거부되었습니다. 키를 확인하세요');
   if (e instanceof Anthropic.PermissionDeniedError) return new Error('이 Claude 키로는 쓸 수 없습니다. 콘솔에서 키 권한을 확인하세요');
   if (e instanceof Anthropic.RateLimitError) return new Error('요청이 잠시 몰렸습니다. 1분쯤 뒤에 다시 해 보세요');
@@ -35,23 +49,31 @@ function friendlyError(e) {
   return e;
 }
 
-async function askJSON({ content, schema, effort }) {
-  const c = await getClient();
-  let res;
+async function askJSON(args) {
   try {
-    res = await c.beta.messages.create({
-      model: MODEL,
-      max_tokens: 16000,
-      system: FAMILY,
-      messages: [{ role: 'user', content }],
-      output_config: { effort, format: { type: 'json_schema', schema } },
-      // If a safety check declines, the API retries on a suitable model inside the same call.
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default',
-    });
+    return await askOnce(args, false);
+  } catch (e) {
+    if (!(Anthropic && e instanceof Anthropic.AuthenticationError)) throw friendlyError(e);
+  }
+  try {
+    return await askOnce(args, true);
   } catch (e) {
     throw friendlyError(e);
   }
+}
+
+async function askOnce({ content, schema, effort }, refresh) {
+  const c = await getClient(refresh);
+  const res = await c.beta.messages.create({
+    model: MODEL,
+    max_tokens: 16000,
+    system: FAMILY,
+    messages: [{ role: 'user', content }],
+    output_config: { effort, format: { type: 'json_schema', schema } },
+    // If a safety check declines, the API retries on a suitable model inside the same call.
+    betas: ['server-side-fallback-2026-07-01'],
+    fallbacks: 'default',
+  });
   if (res.stop_reason === 'refusal') throw new Error('이 요청에는 답할 수 없다고 합니다. 다른 사진이나 질문으로 해 보세요');
   if (res.stop_reason === 'max_tokens') throw new Error('답이 너무 길어 끊겼습니다. 사진을 더 가까이 찍어 다시 해 보세요');
   const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('');

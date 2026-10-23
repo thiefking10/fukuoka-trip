@@ -175,6 +175,14 @@ export async function seedLocalIfEmpty() {
   } catch { /* no seed: the plan view shows its empty state */ }
 }
 
+// A small text file from the private data repo, or null when it is not there.
+export async function readPrivateText(path) {
+  const r = await fetch(`${API}/${path}`, { headers: headers({ Accept: 'application/vnd.github.raw' }), cache: 'no-store' });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`비공개 저장소를 읽지 못했습니다 (${r.status})`);
+  return (await r.text()).trim();
+}
+
 // ---- photos (mission book) ----
 const photoUrls = new Map();
 
