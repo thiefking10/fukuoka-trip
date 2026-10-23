@@ -1,6 +1,6 @@
 // 찍어서 물어보기: photograph a sign, menu, machine or product and get it explained.
 import { h, mount, ls, shrinkImage, toast } from '../util.js';
-import { askPhoto, hasAI } from '../gemini.js';
+import { askPhoto, hasAI } from '../ai.js';
 
 const MODES = [
   ['sign', '표지판·안내문', '🪧'],
@@ -86,6 +86,6 @@ export function renderCamera(root) {
       hist.map((x) => h('details', { class: 'hist' },
         h('summary', null, x.result.title || '사진 설명', h('span', { class: 'muted' }, ` · ${new Date(x.at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`)),
         resultView(x.result)))) : null,
-    h('p', { class: 'muted small' }, '여권이나 카드처럼 개인정보가 보이는 것은 찍지 마세요. 사진은 구글 AI로 전송됩니다.'),
+    h('p', { class: 'muted small' }, '여권이나 카드처럼 개인정보가 보이는 것은 찍지 마세요. 사진은 Anthropic의 Claude로 전송됩니다.'),
   );
 }

@@ -67,16 +67,16 @@ async function checkGithub(token) {
   throw new Error(r.status === 401 ? '토큰이 올바르지 않습니다' : `저장소에 접근하지 못했습니다 (${r.status}). 토큰에 ${REPO} 저장소와 Contents 권한이 있는지 확인하세요`);
 }
 
-async function checkGemini(key) {
-  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1', { headers: { 'x-goog-api-key': key } });
-  if (r.ok) return '확인됨';
-  throw new Error(`제미나이 키가 거부되었습니다 (${r.status})`);
+// Only the shape is checked here; the app reports a rejected key the first time it is used.
+function checkClaudeKey(key) {
+  if (!key.startsWith('sk-ant-')) throw new Error('복사된 내용이 Claude API 키가 아닙니다. sk-ant- 로 시작하는 값을 복사한 뒤 다시 실행하세요.');
+  return '형식 확인됨 (실제 동작은 앱에서 처음 쓸 때 확인됩니다)';
 }
 
 async function main() {
   // Test hook: lets the lock/unlock round trip be checked with throwaway values.
   if (process.env.FT_SETUP_TEST) {
-    writeFileSync(OUT, JSON.stringify(await lock({ gh: 'test-gh', gm: 'test-gm' }, process.env.FT_SETUP_TEST), null, 2));
+    writeFileSync(OUT, JSON.stringify(await lock({ gh: 'test-gh', ak: 'test-ak' }, process.env.FT_SETUP_TEST), null, 2));
     console.log(`test file written: ${OUT}`);
     return;
   }
@@ -95,12 +95,8 @@ async function main() {
   }
   try { console.log(`   ${await checkGithub(gh)}`); } catch (e) { console.error(`   ${e.message}`); process.exit(1); }
 
-  const gm = await askHidden('2) 제미나이 API 키를 복사한 뒤 엔터: ', { fromClipboard: true });
-  if (!gm || gm === gh) {
-    console.error('   제미나이 키가 복사되지 않았습니다. 키를 복사한 뒤 다시 실행하세요.');
-    process.exit(1);
-  }
-  try { console.log(`   ${await checkGemini(gm)}`); } catch (e) { console.error(`   ${e.message}`); process.exit(1); }
+  const ak = await askHidden('2) Claude API 키를 복사한 뒤 엔터: ', { fromClipboard: true });
+  try { console.log(`   ${checkClaudeKey(ak)}`); } catch (e) { console.error(`   ${e.message}`); process.exit(1); }
 
   let pass;
   for (;;) {
@@ -111,7 +107,7 @@ async function main() {
     console.log('   두 번 입력한 암호가 다릅니다. 다시 입력해 주세요.');
   }
 
-  writeFileSync(OUT, JSON.stringify(await lock({ gh, gm }, pass), null, 2));
+  writeFileSync(OUT, JSON.stringify(await lock({ gh, ak }, pass), null, 2));
   console.log(`\n완료: ${OUT}`);
   console.log('이 파일은 잠겨 있어서 깃허브에 올려도 됩니다. 가족 암호는 가족에게만 알려 주세요.\n');
 }

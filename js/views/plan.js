@@ -2,7 +2,7 @@
 import { store, put, remove, list, update } from '../store.js';
 import { h, mount, sheet, confirmSheet, toast, todayStr, nowHM, dayLabel, daysUntil, mapsDirUrl, uid } from '../util.js';
 import { placeById, taxiCard, pickPlace, allPlaces } from '../places.js';
-import { askReplan, hasAI } from '../gemini.js';
+import { askReplan, hasAI } from '../ai.js';
 import { prepCard } from './prep.js';
 import { installCard } from '../install.js';
 

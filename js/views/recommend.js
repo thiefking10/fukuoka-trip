@@ -3,7 +3,7 @@ import { PLACES } from '../data/places.js';
 import { FOOD_CATS } from '../data/static.js';
 import { h, mount, distKm, mapsSearchUrl, toast } from '../util.js';
 import { placeCard, basePoint, locate, getBaseMode, setBaseMode, isClosedToday, placeById } from '../places.js';
-import { askPlaces, hasAI } from '../gemini.js';
+import { askPlaces, hasAI } from '../ai.js';
 
 let mode = 'food';
 let cat = null;

@@ -7,6 +7,10 @@ const KEY = 'ft.keys';
 export const getKeys = () => ls.get(KEY);
 export const forgetKeys = () => ls.del(KEY);
 
+// Identifies which version of the locked file this phone opened.
+export const lockedId = (locked) => locked?.ct?.slice(0, 24) || '';
+export const openedLockedId = () => ls.get('ft.lockedId');
+
 export async function fetchLockedFile() {
   try {
     const r = await fetch('secrets.enc.json', { cache: 'no-store' });
@@ -35,5 +39,6 @@ export async function unlock(locked, passcode) {
   }
   const keys = JSON.parse(new TextDecoder().decode(plain));
   ls.set(KEY, keys);
+  ls.set('ft.lockedId', lockedId(locked));
   return keys;
 }
