@@ -144,6 +144,13 @@ textarea.input { resize: vertical; }
 .install-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.7rem 0.6rem 0.7rem 0.8rem; display: grid; grid-template-columns: auto 1fr auto; gap: 0.7rem; align-items: center; }
 .install-card img { border-radius: 12px; display: block; }
 
+/* ---------- family calls ---------- */
+.call-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.85rem 0.9rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; }
+.call-card.is-me { opacity: 0.6; }
+.call-who { display: flex; flex-direction: column; min-width: 0; }
+.call-name { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; }
+.call-btn { min-width: 6.5rem; }
+
 /* ---------- day tabs + timeline ---------- */
 .days { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.5rem; }
 .day { border: 1.5px solid var(--line); background: var(--card); border-radius: 12px; padding: 0.5rem; display: flex; flex-direction: column; align-items: center; min-height: 3.4rem; }

@@ -7,6 +7,7 @@ import { forgetKeys, getKeys } from '../secrets.js';
 import { infoSheet } from './plan.js';
 import { prepSheet, prepCount } from './prep.js';
 import { installApp, isInstalled } from '../install.js';
+import { callSheet } from './call.js';
 
 const rate = () => store.state.trip?.rate || 0; // won per 100 yen
 
@@ -153,6 +154,7 @@ export function renderMore(root) {
   const hotel = placeById('hotel');
   const pc = prepCount();
   const rows = [
+    ['📞', '가족에게 전화', '할머니, 아빠, 고모, 지안이에게 바로 걸기', callSheet],
     ['✅', '출발 전 체크', `${pc.done} / ${pc.total} 개 확인`, () => prepSheet(() => renderMore(root))],
     hotel ? ['🚕', '호텔로 가는 택시 카드', '기사님께 보여주는 일본어 주소', () => taxiCard(hotel)] : null,
     ['🙋', '택시 부르는 법', '카카오 T, 호텔에 부탁하기', taxiHelpSheet],

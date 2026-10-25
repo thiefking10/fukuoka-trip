@@ -5,6 +5,7 @@ import { placeById, taxiCard, pickPlace, allPlaces } from '../places.js';
 import { askReplan, hasAI } from '../ai.js';
 import { prepCard } from './prep.js';
 import { installCard } from '../install.js';
+import { callSheet } from './call.js';
 
 let activeDay = null;
 
@@ -47,6 +48,7 @@ function ticket(trip) {
     h('div', { class: 'ticket-stub' },
       h('button', { class: 'stub-btn', onclick: () => infoSheet(trip) }, h('span', { class: 'stub-ico' }, '✈'), '항공·호텔'),
       trip.hotel ? h('button', { class: 'stub-btn', onclick: () => taxiCard(placeById('hotel')) }, h('span', { class: 'stub-ico' }, '🚕'), '호텔로') : null,
+      h('button', { class: 'stub-btn', onclick: callSheet }, h('span', { class: 'stub-ico' }, '📞'), '가족 전화'),
     ),
   );
 }
