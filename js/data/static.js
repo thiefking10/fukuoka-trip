@@ -91,6 +91,16 @@ export const PHRASES = [
   },
 ];
 
+// Public emergency numbers. "dial" is what the phone calls; 110/119 work from a roaming Korean phone too.
+export const EMERGENCY = [
+  { name: '경찰', num: '110', dial: '110', desc: '사건·사고, 도난, 아이를 잃어버렸을 때', ja: '警察をお願いします', jaKo: '케-사츠오 오네가이시마스 (경찰 부탁합니다)' },
+  { name: '구급차 · 화재', num: '119', dial: '119', desc: '다치거나 갑자기 아플 때, 불이 났을 때', ja: '救急車をお願いします', jaKo: '큐-큐-샤오 오네가이시마스 (구급차 부탁합니다)' },
+  { name: 'Japan Visitor Hotline', num: '050-3816-2787', dial: '+815038162787', desc: '일본정부관광국 24시간 상담. 한국어 가능. 병원 찾기, 사고, 재난 안내' },
+  { name: '외교부 영사콜센터', num: '+82-2-3210-0404', dial: '+82232100404', desc: '24시간. 여권 분실, 사건·사고 때 한국어로 도움' },
+  { name: '주후쿠오카 대한민국 총영사관', num: '092-771-0461', dial: '+81927710461', desc: '평일 업무 시간. 여권 재발급 등' },
+  { name: '호텔 뉴오타니 하카타', num: '092-714-1111', dial: '+81927141111', desc: '호텔 프런트 (24시간)' },
+];
+
 export const ONSEN_GUIDE = [
   { t: '신발을 벗고 들어가요', d: '입구 신발장에 신발을 넣고 열쇠를 챙깁니다.' },
   { t: '남탕(男)과 여탕(女)을 확인해요', d: '파란 천은 남탕, 빨간 천은 여탕인 경우가 많습니다. 한자를 꼭 확인하세요.' },

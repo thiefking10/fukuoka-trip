@@ -150,6 +150,10 @@ textarea.input { resize: vertical; }
 .call-who { display: flex; flex-direction: column; min-width: 0; }
 .call-name { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; }
 .call-btn { min-width: 6.5rem; }
+.call-num { font-family: var(--body); font-size: 1rem; font-weight: 700; color: var(--indigo); }
+.call-card.urgent { border: 2px solid var(--hanko); background: var(--hanko-soft); }
+.call-card.urgent .call-num { color: var(--hanko); font-family: var(--display); font-size: 1.6rem; }
+.call-ja { font-family: var(--ja); font-weight: 700; font-size: 0.92rem; }
 
 /* ---------- day tabs + timeline ---------- */
 .days { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.5rem; }

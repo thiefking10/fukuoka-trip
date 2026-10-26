@@ -1,6 +1,6 @@
 // Network first so a new version shows up as soon as it is published,
 // with the last good copy as the fallback when there is no signal.
-const CACHE = 'ft-shell-v6';
+const CACHE = 'ft-shell-v7';
 const SHELL = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest', 'icons/icon-192.png',
   'js/app.js', 'js/install.js', 'icons/icon-512.png', 'js/util.js', 'js/store.js', 'js/secrets.js', 'js/ai.js', 'js/places.js',
